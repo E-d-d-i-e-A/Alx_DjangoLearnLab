@@ -97,7 +97,7 @@ python manage.py createsuperuser
 - ALX Software Engineering Program
 
 ## Date
-October 19, 2025
+October 29, 2025
 
 ---
 
