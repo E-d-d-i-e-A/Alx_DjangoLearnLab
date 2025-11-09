@@ -9,8 +9,8 @@ def query_books_by_author(author_name):
         # Get the author by name
         author = Author.objects.get(name=author_name)
         
-        # Query all books by this author using the related_name 'books'
-        books = author.books.all()
+        # Query all books by this author using objects.filter()
+        books = Book.objects.filter(author=author)
         
         print(f"\nBooks by {author_name}:")
         for book in books:
@@ -53,8 +53,8 @@ def retrieve_librarian_for_library(library_name):
         # Get the library by name
         library = Library.objects.get(name=library_name)
         
-        # Access the librarian using the OneToOne relationship
-        librarian = library.librarian
+        # Retrieve the librarian using Librarian.objects.get()
+        librarian = Librarian.objects.get(library=library)
         
         print(f"\nLibrarian for {library_name}:")
         print(f"  - {librarian.name}")
@@ -76,5 +76,4 @@ def retrieve_librarian_for_library(library_name):
 #     # List books in a library
 #     list_books_in_library("Central Library")
 #     
-#     # Retrieve librarian for a library
-#     retrieve_librarian_for_library("Central Library")
+#
