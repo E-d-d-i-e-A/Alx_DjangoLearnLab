@@ -7,3 +7,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'relationship_app',  # ← Make sure this is here!
 ]
+
+# Login redirect URL
+LOGIN_REDIRECT_URL = 'list_books'
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = 'login'
