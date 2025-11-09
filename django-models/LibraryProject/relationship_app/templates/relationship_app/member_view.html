@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Member View</title>
+</head>
+<body>
+    <h1>Member Dashboard</h1>
+    <p>Welcome, {{ user.username }}!</p>
+    <p>You have Member privileges.</p>
+    <h2>Member Functions:</h2>
+    <ul>
+        <li>Browse available books</li>
+        <li>View library information</li>
+        <li>Access member resources</li>
+    </ul>
+    <a href="{% url 'list_books' %}">View Books</a> | 
+    <a href="{% url 'logout' %}">Logout</a>
+</body>
+</html>
