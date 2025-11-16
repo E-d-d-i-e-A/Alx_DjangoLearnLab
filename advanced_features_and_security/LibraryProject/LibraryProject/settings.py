@@ -134,40 +134,83 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # ============================================================================
-# SECURITY SETTINGS
+# HTTPS AND SECURITY SETTINGS
 # ============================================================================
 
-# Security: Prevent browsers from guessing content types
-# Prevents MIME type sniffing which could lead to XSS attacks
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
-# Security: Enable browser's XSS filter
-# Helps prevent cross-site scripting attacks
-SECURE_BROWSER_XSS_FILTER = True
-
-# Security: Prevent site from being framed (clickjacking protection)
-# Only allows same-origin framing
-X_FRAME_OPTIONS = 'DENY'
-
-# Security: Ensure cookies are only sent over HTTPS in production
-# Protects session cookies from being intercepted
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-
-# Security: Additional HTTPS settings for production
-# Forces browsers to use HTTPS for all future requests
+# HTTPS Redirect Configuration
+# -----------------------------------------------------------------------------
+# SECURE_SSL_REDIRECT: Redirects all non-HTTPS requests to HTTPS
+# This ensures all traffic to the application is encrypted
+# CRITICAL: Only enable in production with valid SSL certificate
 SECURE_SSL_REDIRECT = True
 
-# Security: HSTS (HTTP Strict Transport Security)
-# Tells browsers to always use HTTPS
+# HTTP Strict Transport Security (HSTS)
+# -----------------------------------------------------------------------------
+# SECURE_HSTS_SECONDS: Time (in seconds) browsers should remember to only 
+# access the site via HTTPS. Set to 31536000 (1 year) for production.
+# This prevents protocol downgrade attacks and cookie hijacking
 SECURE_HSTS_SECONDS = 31536000  # 1 year
+
+# SECURE_HSTS_INCLUDE_SUBDOMAINS: Applies HSTS policy to all subdomains
+# Ensures all subdomains are also accessed via HTTPS only
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# SECURE_HSTS_PRELOAD: Allows site to be included in browsers' HSTS preload list
+# Provides protection even on first visit before HSTS header is received
 SECURE_HSTS_PRELOAD = True
 
-# Security: Content Security Policy (CSP)
-# Helps prevent XSS attacks by controlling resource loading
+# Secure Cookie Configuration
+# -----------------------------------------------------------------------------
+# SESSION_COOKIE_SECURE: Ensures session cookies are only sent over HTTPS
+# Prevents session hijacking via man-in-the-middle attacks
+SESSION_COOKIE_SECURE = True
+
+# CSRF_COOKIE_SECURE: Ensures CSRF cookies are only sent over HTTPS
+# Protects CSRF tokens from being intercepted over insecure connections
+CSRF_COOKIE_SECURE = True
+
+# Additional Secure Headers
+# -----------------------------------------------------------------------------
+# X_FRAME_OPTIONS: Prevents site from being displayed in frames/iframes
+# Set to 'DENY' to completely prevent framing (clickjacking protection)
+# Alternative: 'SAMEORIGIN' allows framing by same domain only
+X_FRAME_OPTIONS = 'DENY'
+
+# SECURE_CONTENT_TYPE_NOSNIFF: Prevents browsers from MIME-sniffing
+# Forces browsers to respect declared content-type
+# Helps prevent XSS attacks via content-type confusion
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# SECURE_BROWSER_XSS_FILTER: Enables browser's XSS filtering
+# Provides additional protection against reflected XSS attacks
+# Modern browsers have this enabled by default, but explicit is better
+SECURE_BROWSER_XSS_FILTER = True
+
+# Content Security Policy (CSP)
+# -----------------------------------------------------------------------------
+# Defines approved sources of content that browsers should load
+# Helps prevent XSS, clickjacking, and other code injection attacks
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'",)
 CSP_STYLE_SRC = ("'self'",)
 CSP_IMG_SRC = ("'self'", "data:")
 CSP_FONT_SRC = ("'self'",)
+
+# Proxy Configuration (if behind reverse proxy)
+# -----------------------------------------------------------------------------
+# SECURE_PROXY_SSL_HEADER: Tells Django to trust X-Forwarded-Proto header
+# Only enable if behind a trusted proxy (e.g., Nginx, Apache, AWS ELB)
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Development Override
+# -----------------------------------------------------------------------------
+# NOTE: For local development without SSL certificate, you can temporarily
+# disable these settings. NEVER deploy to production with these disabled!
+# Uncomment the following lines for local development only:
+#
+# import sys
+# if 'runserver' in sys.argv:
+#     SECURE_SSL_REDIRECT = False
+#     SESSION_COOKIE_SECURE = False
+#     CSRF_COOKIE_SECURE = False
+#     SECURE_HSTS_SECONDS = 0
