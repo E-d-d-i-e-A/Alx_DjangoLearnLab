@@ -23,9 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-your-secret-key-here'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Set to False in production to prevent exposure of sensitive information
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS should be configured for production
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -129,3 +131,43 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ============================================================================
+# SECURITY SETTINGS
+# ============================================================================
+
+# Security: Prevent browsers from guessing content types
+# Prevents MIME type sniffing which could lead to XSS attacks
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Security: Enable browser's XSS filter
+# Helps prevent cross-site scripting attacks
+SECURE_BROWSER_XSS_FILTER = True
+
+# Security: Prevent site from being framed (clickjacking protection)
+# Only allows same-origin framing
+X_FRAME_OPTIONS = 'DENY'
+
+# Security: Ensure cookies are only sent over HTTPS in production
+# Protects session cookies from being intercepted
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Security: Additional HTTPS settings for production
+# Forces browsers to use HTTPS for all future requests
+SECURE_SSL_REDIRECT = True
+
+# Security: HSTS (HTTP Strict Transport Security)
+# Tells browsers to always use HTTPS
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Security: Content Security Policy (CSP)
+# Helps prevent XSS attacks by controlling resource loading
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'",)
+CSP_IMG_SRC = ("'self'", "data:")
+CSP_FONT_SRC = ("'self'",)
