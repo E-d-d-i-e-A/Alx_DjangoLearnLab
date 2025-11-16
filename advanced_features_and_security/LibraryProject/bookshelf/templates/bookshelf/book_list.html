@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+</head>
+<body>
+    <h1>Book List</h1>
+    
+    <!-- Secure search form with CSRF protection -->
+    <form method="get" action="{% url 'book_list' %}">
+        <input type="text" name="search" placeholder="Search books..." value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+    
+    <a href="{% url 'book_create' %}">Add New Book</a>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publication Year</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <!-- Django templates automatically escape output to prevent XSS -->
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.publication_year }}</td>
+                <td>
+                    <a href="{% url 'book_edit' book.pk %}">Edit</a> |
+                    <a href="{% url 'book_delete' book.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No books found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
