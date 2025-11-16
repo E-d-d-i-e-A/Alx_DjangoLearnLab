@@ -21,4 +21,16 @@ class CustomUserAdmin(UserAdmin):
     # Default ordering
     ordering = ['username']
     
-    #
+    # Fieldsets for editing existing users
+    fieldsets = UserAdmin.fieldsets + (
+        ('Additional Info', {'fields': ('date_of_birth', 'profile_photo')}),
+    )
+    
+    # Fieldsets for adding new users
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Additional Info', {'fields': ('date_of_birth', 'profile_photo')}),
+    )
+
+
+# Register CustomUser with CustomUserAdmin
+admin.site.register(CustomUser, CustomUserAdmin)
