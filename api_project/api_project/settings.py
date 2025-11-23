@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Django REST Framework
+    'rest_framework.authtoken',  # Token Authentication
     'api',  # API app
 ]
 
@@ -123,3 +124,27 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ============================================================================
+# DJANGO REST FRAMEWORK SETTINGS
+# ============================================================================
+
+REST_FRAMEWORK = {
+    # Authentication Configuration
+    # Defines how the API verifies user identity
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # Token-based auth
+        'rest_framework.authentication.SessionAuthentication',  # Session-based auth (for browsable API)
+    ],
+    
+    # Permission Configuration
+    # Defines who can access API endpoints
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
+    ],
+    
+    # Pagination (Optional)
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
