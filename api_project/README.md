@@ -1,7 +1,7 @@
 # API Project - Django REST Framework
 
 ## Overview
-This is a Django REST Framework project for building APIs. The project includes a Book API with CRUD operations.
+This is a Django REST Framework project for building APIs. The project includes a Book API with full CRUD operations using ViewSets and Routers.
 
 ## Project Setup
 
@@ -35,8 +35,8 @@ api_project/
     ├── __init__.py
     ├── models.py         # Book model
     ├── serializers.py    # BookSerializer
-    ├── views.py          # BookList API view
-    ├── urls.py           # API URL routing
+    ├── views.py          # BookList & BookViewSet
+    ├── urls.py           # API routing with DefaultRouter
     ├── admin.py
     ├── apps.py
     └── tests.py
@@ -72,7 +72,7 @@ Then access admin at: `http://127.0.0.1:8000/admin/`
 
 ## API Endpoints
 
-### Book API
+### Book API (ListAPIView)
 
 #### List All Books
 **Endpoint:** `GET /api/books/`
@@ -100,6 +100,184 @@ curl http://127.0.0.1:8000/api/books/
 ]
 ```
 
+---
+
+### Book API with CRUD Operations (ViewSet)
+
+The ViewSet provides full CRUD functionality for managing books.
+
+#### 1. List All Books
+**Endpoint:** `GET /api/books_all/`
+
+**Description:** Retrieves a list of all books
+
+**Example Request:**
+```bash
+curl http://127.0.0.1:8000/api/books_all/
+```
+
+**Example Response:**
+```json
+[
+    {
+        "id": 1,
+        "title": "1984",
+        "author": "George Orwell"
+    },
+    {
+        "id": 2,
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee"
+    }
+]
+```
+
+---
+
+#### 2. Retrieve a Single Book
+**Endpoint:** `GET /api/books_all/<id>/`
+
+**Description:** Retrieves details of a specific book by ID
+
+**Example Request:**
+```bash
+curl http://127.0.0.1:8000/api/books_all/1/
+```
+
+**Example Response:**
+```json
+{
+    "id": 1,
+    "title": "1984",
+    "author": "George Orwell"
+}
+```
+
+---
+
+#### 3. Create a New Book
+**Endpoint:** `POST /api/books_all/`
+
+**Description:** Creates a new book
+
+**Request Body (JSON):**
+```json
+{
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald"
+}
+```
+
+**Example Request (cURL):**
+```bash
+curl -X POST http://127.0.0.1:8000/api/books_all/ \
+  -H "Content-Type: application/json" \
+  -d '{"title": "The Great Gatsby", "author": "F. Scott Fitzgerald"}'
+```
+
+**Example Response:**
+```json
+{
+    "id": 3,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald"
+}
+```
+
+---
+
+#### 4. Update a Book (Full Update)
+**Endpoint:** `PUT /api/books_all/<id>/`
+
+**Description:** Updates all fields of an existing book
+
+**Request Body (JSON):**
+```json
+{
+    "title": "1984 (Updated Edition)",
+    "author": "George Orwell"
+}
+```
+
+**Example Request (cURL):**
+```bash
+curl -X PUT http://127.0.0.1:8000/api/books_all/1/ \
+  -H "Content-Type: application/json" \
+  -d '{"title": "1984 (Updated Edition)", "author": "George Orwell"}'
+```
+
+**Example Response:**
+```json
+{
+    "id": 1,
+    "title": "1984 (Updated Edition)",
+    "author": "George Orwell"
+}
+```
+
+---
+
+#### 5. Partial Update a Book
+**Endpoint:** `PATCH /api/books_all/<id>/`
+
+**Description:** Updates specific fields of an existing book
+
+**Request Body (JSON):**
+```json
+{
+    "title": "1984 - Revised"
+}
+```
+
+**Example Request (cURL):**
+```bash
+curl -X PATCH http://127.0.0.1:8000/api/books_all/1/ \
+  -H "Content-Type: application/json" \
+  -d '{"title": "1984 - Revised"}'
+```
+
+**Example Response:**
+```json
+{
+    "id": 1,
+    "title": "1984 - Revised",
+    "author": "George Orwell"
+}
+```
+
+---
+
+#### 6. Delete a Book
+**Endpoint:** `DELETE /api/books_all/<id>/`
+
+**Description:** Deletes a specific book
+
+**Example Request (cURL):**
+```bash
+curl -X DELETE http://127.0.0.1:8000/api/books_all/1/
+```
+
+**Example Response:**
+```
+HTTP 204 No Content
+```
+
+---
+
+## API Summary Table
+
+| Operation | HTTP Method | Endpoint | Description |
+|-----------|-------------|----------|-------------|
+| List | GET | `/api/books/` | List all books (ListAPIView) |
+| List | GET | `/api/books_all/` | List all books (ViewSet) |
+| Retrieve | GET | `/api/books_all/<id>/` | Get single book |
+| Create | POST | `/api/books_all/` | Create new book |
+| Update | PUT | `/api/books_all/<id>/` | Full update |
+| Partial Update | PATCH | `/api/books_all/<id>/` | Partial update |
+| Delete | DELETE | `/api/books_all/<id>/` | Delete book |
+
+---
+
 ## Models
 
 ### Book Model
@@ -110,12 +288,7 @@ Located in `api/models.py`
 - `title` (CharField, max_length=200): Book title
 - `author` (CharField, max_length=100): Book author
 
-**Example:**
-```python
-class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=100)
-```
+---
 
 ## Serializers
 
@@ -126,77 +299,178 @@ Located in `api/serializers.py`
 
 **Fields:** All fields (id, title, author)
 
-**Example:**
-```python
-class BookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
-        fields = '__all__'
-```
+---
 
 ## Views
 
 ### BookList (ListAPIView)
-Located in `api/views.py`
-
-**Type:** Generic List API View
-
-**Purpose:** Returns list of all books
-
-**HTTP Method:** GET
+**Purpose:** Returns list of all books (read-only)
 
 **URL:** `/api/books/`
 
-**Example:**
+**HTTP Method:** GET only
+
+---
+
+### BookViewSet (ModelViewSet)
+**Purpose:** Full CRUD operations on books
+
+**URL Prefix:** `/api/books_all/`
+
+**Supported Operations:**
+- `list()` - GET /books_all/
+- `create()` - POST /books_all/
+- `retrieve()` - GET /books_all/<id>/
+- `update()` - PUT /books_all/<id>/
+- `partial_update()` - PATCH /books_all/<id>/
+- `destroy()` - DELETE /books_all/<id>/
+
+---
+
+## Router Configuration
+
+### DefaultRouter
+Located in `api/urls.py`
 ```python
-class BookList(generics.ListAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'books_all', BookViewSet, basename='book_all')
 ```
 
-## URL Configuration
+**Automatically generates URLs:**
+- `/books_all/` - List and Create
+- `/books_all/<id>/` - Retrieve, Update, Delete
 
-### API URLs (api/urls.py)
-```python
-urlpatterns = [
-    path('books/', BookList.as_view(), name='book-list'),
-]
-```
-
-### Main URLs (api_project/urls.py)
-```python
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-]
-```
+---
 
 ## Testing the API
 
 ### Method 1: Using cURL
+
+#### List All Books
 ```bash
-# List all books
-curl http://127.0.0.1:8000/api/books/
+curl http://127.0.0.1:8000/api/books_all/
 ```
 
-### Method 2: Using Browser
-Simply visit: `http://127.0.0.1:8000/api/books/`
+#### Get Single Book
+```bash
+curl http://127.0.0.1:8000/api/books_all/1/
+```
 
-Django REST Framework provides a browsable API interface.
+#### Create New Book
+```bash
+curl -X POST http://127.0.0.1:8000/api/books_all/ \
+  -H "Content-Type: application/json" \
+  -d '{"title": "New Book", "author": "New Author"}'
+```
 
-### Method 3: Using Python requests
+#### Update Book
+```bash
+curl -X PUT http://127.0.0.1:8000/api/books_all/1/ \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Updated Title", "author": "Updated Author"}'
+```
+
+#### Partial Update
+```bash
+curl -X PATCH http://127.0.0.1:8000/api/books_all/1/ \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Only Title Changed"}'
+```
+
+#### Delete Book
+```bash
+curl -X DELETE http://127.0.0.1:8000/api/books_all/1/
+```
+
+---
+
+### Method 2: Using Browser (DRF Browsable API)
+
+Simply visit these URLs in your browser:
+- `http://127.0.0.1:8000/api/books_all/` - Interactive list/create
+- `http://127.0.0.1:8000/api/books_all/1/` - Interactive retrieve/update/delete
+
+Django REST Framework provides forms to test POST, PUT, PATCH, DELETE operations!
+
+---
+
+### Method 3: Using Postman
+
+#### Setup:
+1. Open Postman
+2. Import collection or create requests manually
+
+#### GET Request (List Books):
+- Method: GET
+- URL: `http://127.0.0.1:8000/api/books_all/`
+- Click "Send"
+
+#### POST Request (Create Book):
+- Method: POST
+- URL: `http://127.0.0.1:8000/api/books_all/`
+- Headers: `Content-Type: application/json`
+- Body (raw JSON):
+```json
+{
+    "title": "Test Book",
+    "author": "Test Author"
+}
+```
+- Click "Send"
+
+#### PUT Request (Update Book):
+- Method: PUT
+- URL: `http://127.0.0.1:8000/api/books_all/1/`
+- Headers: `Content-Type: application/json`
+- Body (raw JSON):
+```json
+{
+    "title": "Updated Book",
+    "author": "Updated Author"
+}
+```
+- Click "Send"
+
+#### DELETE Request:
+- Method: DELETE
+- URL: `http://127.0.0.1:8000/api/books_all/1/`
+- Click "Send"
+
+---
+
+### Method 4: Using Python requests
 ```python
 import requests
+import json
 
-response = requests.get('http://127.0.0.1:8000/api/books/')
+BASE_URL = 'http://127.0.0.1:8000/api/books_all/'
+
+# List all books
+response = requests.get(BASE_URL)
 print(response.json())
+
+# Create a book
+new_book = {'title': 'New Book', 'author': 'New Author'}
+response = requests.post(BASE_URL, json=new_book)
+print(response.json())
+
+# Get single book
+response = requests.get(f'{BASE_URL}1/')
+print(response.json())
+
+# Update book
+updated_book = {'title': 'Updated', 'author': 'Updated Author'}
+response = requests.put(f'{BASE_URL}1/', json=updated_book)
+print(response.json())
+
+# Delete book
+response = requests.delete(f'{BASE_URL}1/')
+print(response.status_code)  # Should be 204
 ```
 
-### Method 4: Using Postman
-1. Open Postman
-2. Create new GET request
-3. URL: `http://127.0.0.1:8000/api/books/`
-4. Click "Send"
+---
 
 ## Adding Sample Data
 
@@ -213,30 +487,10 @@ Book.objects.create(title="To Kill a Mockingbird", author="Harper Lee")
 Book.objects.create(title="The Great Gatsby", author="F. Scott Fitzgerald")
 
 # Verify
-Book.objects.all()
+print(Book.objects.all())
 ```
 
-### Using Django Admin
-1. Run: `python manage.py createsuperuser`
-2. Start server: `python manage.py runserver`
-3. Visit: `http://127.0.0.1:8000/admin/`
-4. Login and add books through the admin interface
-
-## Installed Apps
-
-The following apps are configured in `settings.py`:
-```python
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',  # Django REST Framework
-    'api',  # API app
-]
-```
+---
 
 ## Common Commands
 ```bash
@@ -252,19 +506,17 @@ python manage.py runserver
 # Create superuser
 python manage.py createsuperuser
 
-# Run tests
-python manage.py test
-
-# Check for issues
-python manage.py check
-
 # Django shell
 python manage.py shell
 ```
 
-## API Response Format
+---
 
-All API responses are in JSON format:
+## API Response Formats
+
+### Success Responses
+
+#### List/Retrieve (200 OK)
 ```json
 [
     {
@@ -275,30 +527,49 @@ All API responses are in JSON format:
 ]
 ```
 
-## Error Handling
+#### Create (201 Created)
+```json
+{
+    "id": 3,
+    "title": "New Book",
+    "author": "New Author"
+}
+```
 
-### 404 Not Found
+#### Update (200 OK)
+```json
+{
+    "id": 1,
+    "title": "Updated Title",
+    "author": "Updated Author"
+}
+```
+
+#### Delete (204 No Content)
+```
+(Empty response body)
+```
+
+---
+
+### Error Responses
+
+#### 400 Bad Request
+```json
+{
+    "title": ["This field is required."],
+    "author": ["This field is required."]
+}
+```
+
+#### 404 Not Found
 ```json
 {
     "detail": "Not found."
 }
 ```
 
-### 500 Server Error
-```json
-{
-    "detail": "Internal server error."
-}
-```
-
-## Next Steps
-
-After completing this setup, you can:
-1. ✅ List all books (GET /api/books/)
-2. 🔄 Create new books (POST endpoint)
-3. 🔄 Retrieve single book (GET /api/books/<id>/)
-4. 🔄 Update book (PUT/PATCH /api/books/<id>/)
-5. 🔄 Delete book (DELETE /api/books/<id>/)
+---
 
 ## Project Dependencies
 ```
@@ -306,36 +577,7 @@ Django==5.1.3
 djangorestframework==3.14.0
 ```
 
-To save dependencies:
-```bash
-pip freeze > requirements.txt
-```
-
-To install from requirements:
-```bash
-pip install -r requirements.txt
-```
-
-## Troubleshooting
-
-### Issue: "No module named 'rest_framework'"
-**Solution:** Install Django REST Framework
-```bash
-pip install djangorestframework
-```
-
-### Issue: "Table api_book doesn't exist"
-**Solution:** Run migrations
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### Issue: Empty list returned
-**Solution:** Add some books via admin or shell
-
-### Issue: 404 on /api/books/
-**Solution:** Check that api.urls is included in main urls.py
+---
 
 ## Author
 **Edidiong Aquatang**
