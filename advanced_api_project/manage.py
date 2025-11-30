@@ -16,28 +16,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-```
-
-**FILE 14:** `advanced_api_project/README.md` (same content as before)
-
----
-
-## 🎯 CORRECTED File Structure:
-```
-advanced_api_project/              ← UNDERSCORES not hyphens!
-├── manage.py
-├── README.md
-├── advanced_api_project/          ← UNDERSCORES!
-│   ├── __init__.py
-│   ├── settings.py               ← This is what checker looks for
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-└── api/
-    ├── __init__.py
-    ├── models.py                  ← Author and Book models
-    ├── serializers.py             ← BookSerializer and AuthorSerializer
-    ├── admin.py
-    ├── apps.py
-    ├── views.py
-    └── tests.py
