@@ -1,24 +1,60 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import Book
 from .serializers import BookSerializer
 class BookListView(generics.ListAPIView):
 """
-API view to retrieve list of all books.
-Endpoint: GET /books/
+API view to retrieve list of all books with filtering, searching, and ordering.
+Endpoint: GET /api/books/
 
 Permissions:
     - Read-only access for all users (authenticated and unauthenticated)
 
+Filtering:
+    Filter books by specific field values.
+    Examples:
+        - /api/books/?title=Django for Beginners
+        - /api/books/?author=1
+        - /api/books/?publication_year=2020
+        - /api/books/?author=1&publication_year=2020
+
+Searching:
+    Search across title and author name fields.
+    Examples:
+        - /api/books/?search=django
+        - /api/books/?search=python
+        - /api/books/?search=rowling
+
+Ordering:
+    Order results by any field. Use '-' prefix for descending order.
+    Examples:
+        - /api/books/?ordering=title
+        - /api/books/?ordering=-publication_year
+        - /api/books/?ordering=author
+
+Combined Usage:
+    You can combine filtering, searching, and ordering in one request.
+    Example:
+        /api/books/?search=python&publication_year=2020&ordering=-title
+
 Returns:
-    - List of all Book instances serialized with BookSerializer
-    
-Usage:
-    GET /books/ - Returns all books in the database
+    - List of Book instances matching the query parameters
 """
 queryset = Book.objects.all()
 serializer_class = BookSerializer
 permission_classes = [IsAuthenticatedOrReadOnly]
+
+filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+filterset_fields = ['title', 'author', 'publication_year']
+
+search_fields = ['title', 'author__name']
+
+ordering_fields = ['title', 'publication_year']
+
+ordering = ['title']
 class BookDetailView(generics.RetrieveAPIView):
 """
 API view to retrieve a single book by its ID.
