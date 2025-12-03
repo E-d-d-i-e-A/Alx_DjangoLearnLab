@@ -314,3 +314,179 @@ footer {
     color: #2c3e50;
     margin-bottom: 1.5rem;
 }
+
+/* Post List Styles */
+.posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.post-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-link {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.btn-link:hover {
+    color: #2980b9;
+}
+
+.btn-link.delete {
+    color: #e74c3c;
+}
+
+.btn-link.delete:hover {
+    color: #c0392b;
+}
+
+/* Post Detail Styles */
+.post-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.post-detail {
+    background: white;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.post-detail-title {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.post-detail-meta {
+    color: #7f8c8d;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.post-detail-content {
+    color: #333;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.post-detail-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.post-detail-back {
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+/* Form Styles for Posts */
+#id_title {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+#id_content {
+    width: 100%;
+    min-height: 300px;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+}
+
+/* Button Styles */
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    margin-left: 0.5rem;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* Delete Confirmation Styles */
+.delete-preview {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+}
+
+.delete-preview h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.page-link {
+    color: #3498db;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid #3498db;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.page-link:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+.current-page {
+    color: #7f8c8d;
+    font-weight: 500;
+}
