@@ -32,3 +32,24 @@ class Post(models.Model):
     
     class Meta:
         ordering = ['-published_date']
+
+
+class Comment(models.Model):
+    """
+    Comment model for blog posts.
+    
+    Represents a comment on a blog post with content, author, and timestamps.
+    
+    Fields:
+        post (ForeignKey): Link to Post model - the post being commented on.
+                          One post can have multiple comments (one-to-many relationship).
+                          When post is deleted, all comments are deleted (CASCADE).
+        author (ForeignKey): Link to User model - the user who wrote the comment.
+                            One user can write multiple comments (one-to-many relationship).
+                            When user is deleted, their comments are deleted (CASCADE).
+        content (TextField): The text content of the comment.
+        created_at (DateTimeField): Automatically set when comment is created.
+        updated_at (DateTimeField): Automatically updated when comment is modified.
+    
+    Methods:
+        __str_
