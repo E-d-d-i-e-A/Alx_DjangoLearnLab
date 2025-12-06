@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Comment
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -64,3 +65,46 @@ class UserUpdateForm(forms.ModelForm):
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}),
         }
+
+
+class CommentForm(forms.ModelForm):
+    """
+    Form for creating and updating comments.
+    
+    Allows users to write comments on blog posts.
+    Includes validation for content field.
+    
+    Fields:
+        content: Text content of the comment
+    """
+    
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your comment here...',
+                'rows': 4
+            })
+        }
+        labels = {
+            'content': 'Your Comment'
+        }
+    
+    def clean_content(self):
+        """
+        Validate comment content.
+        
+        Ensures comment is not empty or too short.
+        
+        Returns:
+            str: Cleaned content
+            
+        Raises:
+            ValidationError: If content is too short
+        """
+        content = self.cleaned_data.get('content')
+        if len(content.strip()) < 3:
+            raise forms.ValidationError('Comment must be at least 3 characters long.')
+        return content
