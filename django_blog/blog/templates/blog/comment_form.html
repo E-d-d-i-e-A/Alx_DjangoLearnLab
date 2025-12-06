@@ -1,0 +1,52 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    {% if form.instance.pk %}Edit Comment{% else %}Add Comment{% endif %} - Django Blog
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>{% if form.instance.pk %}Edit Comment{% else %}Add Comment{% endif %}</h2>
+        <p class="auth-subtitle">
+            {% if form.instance.pk %}
+                Update your comment
+            {% else %}
+                Share your thoughts
+            {% endif %}
+        </p>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_content">Comment</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                    <div class="error-message">{{ form.content.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                {% if form.instance.pk %}Update Comment{% else %}Post Comment{% endif %}
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            {% if form.instance.pk %}
+                <a href="{% url 'post-detail' form.instance.post.pk %}">Cancel and go back</a>
+            {% else %}
+                <a href="{% url 'post-list' %}">Cancel and go back</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
