@@ -21,6 +21,16 @@
                 By <strong>{{ post.author.username }}</strong> on 
                 {{ post.published_date|date:"F d, Y" }}
             </p>
+            
+            <!-- Tags Display -->
+            {% if post.tags.all %}
+            <div class="post-tags-small">
+                {% for tag in post.tags.all %}
+                    <a href="{% url 'posts-by-tag' tag.name %}" class="tag-badge-small">{{ tag.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
             <div class="post-content">
                 {{ post.content|truncatewords:50 }}
             </div>
