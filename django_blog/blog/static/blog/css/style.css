@@ -666,3 +666,82 @@ footer {
     background-color: #3498db;
     color: white;
     padding: 0.
+5rem 1.5rem;
+    margin: 1rem 0;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.post-tags-small {
+    margin: 0.5rem 0;
+}
+
+/* Search Results Styles */
+.search-results-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #3498db;
+}
+
+.search-results-header h2 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.results-count {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.no-results p {
+    color: #7f8c8d;
+    margin-bottom: 1rem;
+}
+
+.no-results a {
+    color: #3498db;
+    font-weight: 500;
+}
+
+/* Tag Page Styles */
+.tag-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #3498db;
+}
+
+.tag-header h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.back-link {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .search-form {
+        margin: 1rem 0;
+        width: 100%;
+    }
+    .search-input {
+        min-width: 150px;
+        flex: 1;
+    }
+
+    header nav .container {
+        flex-direction: column;
+    }
+}
