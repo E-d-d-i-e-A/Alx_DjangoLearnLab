@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
 
 
 class Post(models.Model):
     """
     Blog Post model.
     
-    Represents a blog post with title, content, publication date, and author.
+    Represents a blog post with title, content, publication date, author, and tags.
     
     Fields:
         title (CharField): The title of the blog post (max 200 characters).
@@ -15,6 +16,9 @@ class Post(models.Model):
         author (ForeignKey): Link to User model - the author of the post.
                             One user can have multiple posts (one-to-many relationship).
                             When user is deleted, their posts are also deleted (CASCADE).
+        tags (TaggableManager): Manages tags for the post using django-taggit.
+                               Allows many-to-many relationship between posts and tags.
+                               Multiple posts can share the same tag.
     
     Methods:
         __str__: Returns the post title as string representation.
@@ -26,6 +30,7 @@ class Post(models.Model):
     content = models.TextField()
     published_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    tags = TaggableManager()
     
     def __str__(self):
         return self.title
@@ -52,4 +57,19 @@ class Comment(models.Model):
         updated_at (DateTimeField): Automatically updated when comment is modified.
     
     Methods:
-        __str_
+        __str__: Returns a string showing author and post being commented on.
+    
+    Meta:
+        ordering: Comments are ordered by creation date (oldest first).
+    """
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f'Comment by {self.author.username} on {self.post.title}'
+    
+    class Meta:
+        ordering = ['created_at']
