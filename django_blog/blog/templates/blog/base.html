@@ -8,26 +8,41 @@
     <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
 </head>
 <body>
-<header>
-    <nav>
-        <div class="container">
-            <h1 class="logo">Django Blog</h1>
-            <ul class="nav-links">
-                <li><a href="{% url 'post-list' %}">Posts</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'post-create' %}">New Post</a></li>
-                    <li><a href="{% url 'profile' %}">Profile</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                    <li><a href="{% url 'register' %}">Register</a></li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
-</header>
+    <header>
+        <nav>
+            <div class="container">
+                <h1 class="logo">Django Blog</h1>
+                
+                <!-- Search Bar -->
+                <form action="{% url 'search-posts' %}" method="get" class="search-form">
+                    <input type="text" name="q" placeholder="Search posts..." class="search-input" value="{{ request.GET.q }}">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+                
+                <ul class="nav-links">
+                    <li><a href="{% url 'post-list' %}">Posts</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'post-create' %}">New Post</a></li>
+                        <li><a href="{% url 'profile' %}">Profile</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
     
     <main class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
         {% block content %}
         {% endblock %}
     </main>
