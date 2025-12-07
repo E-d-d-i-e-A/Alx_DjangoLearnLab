@@ -54,3 +54,58 @@ class UserUpdateForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     """
+    Form for creating and updating comments.
+    """
+    
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your comment here...',
+                'rows': 4
+            })
+        }
+        labels = {
+            'content': 'Your Comment'
+        }
+    
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if len(content.strip()) < 3:
+            raise forms.ValidationError('Comment must be at least 3 characters long.')
+        return content
+
+
+class PostForm(forms.ModelForm):
+    """
+    Form for creating and updating blog posts with tags.
+    
+    Includes title, content, and tags fields.
+    The tags field uses TagWidget() for better tag input experience.
+    """
+    
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter post title'
+            }),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your post content here...',
+                'rows': 10
+            }),
+            'tags': TagWidget(attrs={
+                'class': 'form-control',
+                'placeholder': 'Add tags separated by commas'
+            }),
+        }
+        labels = {
+            'title': 'Post Title',
+            'content': 'Post Content',
+            'tags': 'Tags'
+        }
