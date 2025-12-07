@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from taggit.models import Tag
 from .models import Post, Comment
-from .forms import CustomUserCreationForm, UserUpdateForm, CommentForm
+from .forms import CustomUserCreationForm, UserUpdateForm, CommentForm, PostForm
 
 
 # ==================== Authentication Views ====================
@@ -113,10 +113,14 @@ class PostDetailView(DetailView):
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
-    """Create a new blog post."""
+    """
+    Create a new blog post with tags.
+    
+    Uses PostForm which includes TagWidget for tag input.
+    """
     model = Post
+    form_class = PostForm
     template_name = 'blog/post_form.html'
-    fields = ['title', 'content', 'tags']
     
     def form_valid(self, form):
         """Set the post author to the current user before saving."""
@@ -130,10 +134,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """Update an existing blog post."""
+    """
+    Update an existing blog post with tags.
+    
+    Uses PostForm which includes TagWidget for tag input.
+    """
     model = Post
+    form_class = PostForm
     template_name = 'blog/post_form.html'
-    fields = ['title', 'content', 'tags']
     
     def form_valid(self, form):
         """Process the form after validation."""
