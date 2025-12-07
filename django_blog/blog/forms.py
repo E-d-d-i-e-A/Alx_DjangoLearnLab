@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Comment
+from .models import Comment, Post
+from taggit.forms import TagWidget
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -108,3 +109,41 @@ class CommentForm(forms.ModelForm):
         if len(content.strip()) < 3:
             raise forms.ValidationError('Comment must be at least 3 characters long.')
         return content
+
+
+class PostForm(forms.ModelForm):
+    """
+    Form for creating and updating blog posts with tags.
+    
+    Includes title, content, and tags fields.
+    Uses TagWidget for better tag input experience.
+    
+    Fields:
+        title: Post title
+        content: Post content
+        tags: Tags associated with the post
+    """
+    
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter post title'
+            }),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your post content here...',
+                'rows': 10
+            }),
+            'tags': TagWidget(attrs={
+                'class': 'form-control',
+                'placeholder': 'Add tags separated by commas (e.g., python, django, tutorial)'
+            })
+        }
+        labels = {
+            'title': 'Post Title',
+            'content': 'Post Content',
+            'tags': 'Tags'
+        }
