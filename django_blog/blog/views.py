@@ -96,9 +96,6 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     """
     Display a single blog post with comments.
-    
-    Shows the full post content and all associated comments.
-    Includes a comment form for authenticated users.
     """
     model = Post
     template_name = 'blog/post_detail.html'
@@ -112,12 +109,43 @@ class PostDetailView(DetailView):
         return context
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostByTagListView(ListView):
     """
-    Create a new blog post with tags.
+    Display all posts filtered by a specific tag.
     
-    Uses PostForm which includes TagWidget for tag input.
+    This view filters posts based on the tag slug provided in the URL.
+    Uses ListView to display all posts that have the specified tag.
     """
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+    
+    def get_queryset(self):
+        """
+        Filter posts by tag slug from URL.
+        
+        Returns:
+            QuerySet of posts filtered by the specified tag
+        """
+        tag_slug = self.kwargs.get('tag_slug')
+        return Post.objects.filter(tags__slug=tag_slug)
+    
+    def get_context_data(self, **kwargs):
+        """
+        Add tag information to context.
+        
+        Returns:
+            Context dictionary with tag object
+        """
+        context = super().get_context_data(**kwargs)
+        tag_slug = self.kwargs.get('tag_slug')
+        context['tag'] = get_object_or_404(Tag, slug=tag_slug)
+        return context
+
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    """Create a new blog post with tags."""
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
@@ -134,11 +162,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """
-    Update an existing blog post with tags.
-    
-    Uses PostForm which includes TagWidget for tag input.
-    """
+    """Update an existing blog post with tags."""
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
@@ -243,13 +267,6 @@ def search_posts(request):
     Search for blog posts based on title, content, or tags.
     
     Uses Django's Q objects to perform complex lookups across multiple fields.
-    Searches in post title, content, and associated tags.
-    
-    Args:
-        request: HTTP request with 'q' parameter containing search query
-        
-    Returns:
-        Rendered search results page with matching posts
     """
     query = request.GET.get('q', '')
     posts = Post.objects.none()
@@ -266,29 +283,6 @@ def search_posts(request):
         'query': query
     }
     return render(request, 'blog/search_results.html', context)
-
-
-def posts_by_tag(request, tag_name):
-    """
-    Display all posts associated with a specific tag.
-    
-    Filters posts by tag name and displays them in a list view.
-    
-    Args:
-        request: HTTP request
-        tag_name: Name of the tag to filter by
-        
-    Returns:
-        Rendered page with posts filtered by tag
-    """
-    tag = get_object_or_404(Tag, name=tag_name)
-    posts = Post.objects.filter(tags__name__in=[tag_name])
-    
-    context = {
-        'posts': posts,
-        'tag': tag
-    }
-    return render(request, 'blog/posts_by_tag.html', context)
 
 
 # ==================== Legacy Home View ====================
