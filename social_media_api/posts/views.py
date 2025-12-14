@@ -1,5 +1,4 @@
-from rest_framework import viewsets, permissions, filters, status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import viewsets, permissions, filters, status, generics
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth import get_user_model
@@ -49,25 +48,21 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def user_feed(request):
+class FeedView(generics.ListAPIView):
     """
-    Get a feed of posts from users that the current user follows.
-    Returns posts ordered by creation date (most recent first).
+    View that generates a feed based on posts from users that the current user follows.
+    Returns posts ordered by creation date, showing the most recent posts at the top.
     """
-    # Get users that the current user is following
-    following_users = request.user.following.all()
-    
-    # Get posts from followed users, ordered by creation date (newest first)
-    feed_posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
-    
-    # Paginate the results
-    paginator = StandardResultsSetPagination()
-    paginated_posts = paginator.paginate_queryset(feed_posts, request)
-    
-    # Serialize the posts
-    serializer = PostSerializer(paginated_posts, many=True)
-    
-    # Return paginated response
-    return paginator.get_paginated_response(serializer.data)
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        # Get the current user
+        user = self.request.user
+        
+        # Get users that the current user is following
+        following_users = user.following.all()
+        
+        # Return posts from followed users, ordered by creation date (newest first)
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
