@@ -96,19 +96,19 @@ class FeedView(generics.ListAPIView):
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
     """
-    Like a post. Prevents duplicate likes and creates a notification.
+    Like a post. Uses get_or_create to prevent duplicate likes and creates a notification.
     """
     post = generics.get_object_or_404(Post, pk=pk)
     
-    # Check if user already liked the post
-    if Like.objects.filter(user=request.user, post=post).exists():
+    # Use get_or_create to handle liking
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
+    
+    if not created:
+        # Like already existed
         return Response(
             {'error': 'You have already liked this post'},
             status=status.HTTP_400_BAD_REQUEST
         )
-    
-    # Create the like
-    like = Like.objects.create(user=request.user, post=post)
     
     # Create notification for post author (don't notify if liking own post)
     if post.author != request.user:
