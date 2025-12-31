@@ -217,7 +217,4 @@ This project is created as part of the ALX Software Engineering Capstone Project
 **Project Status:** ✅ Complete  
 **Last Updated:** December 2025  
 **ALX Capstone Project** - Week 5 Final Submission
-```
-
-
 
